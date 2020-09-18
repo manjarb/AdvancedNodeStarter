@@ -1,0 +1,46 @@
+{
+  "ts-node": {
+    "transpileOnly": true
+  },
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "sourceMap": true,
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016",
+      "es2017"
+    ],
+    "strict": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./typings"
+    ],
+    "types": [
+      "node",
+      "mocha"
+    ],
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "@app/*": [
+        "./app/*"
+      ],
+      "@config/*": [
+        "./config/*"
+      ]
+    },
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "outDir": "./dist"
+  },
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    ".logs",
+    "upload",
+  ]
+}

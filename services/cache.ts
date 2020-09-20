@@ -7,8 +7,9 @@ const redisClient = redis.createClient(redisUrl);
 
 const exec = mongoose.Query.prototype.exec;
 
-(mongoose.Query.prototype as any).cache = function () {
+(mongoose.Query.prototype as any).cache = function (options = {}) {
   this.useCache = true;
+  this.hashKey = JSON.stringify(options.key || "");
   return this;
 };
 
@@ -26,7 +27,7 @@ mongoose.Query.prototype.exec = async function (): Promise<any> {
   );
 
   // Check existed redis cache
-  const cachedValue = await util.promisify(redisClient.get)(key);
+  const cachedValue = await util.promisify(redisClient.hget)(this.hashKey, key);
 
   // if yes, return cache
   if (cachedValue) {
@@ -44,7 +45,11 @@ mongoose.Query.prototype.exec = async function (): Promise<any> {
   const result = await exec.apply(this, arguments as any);
 
   // Update Cache
-  redisClient.set(key, JSON.stringify(result));
+  redisClient.hset(this.hashKey, key, JSON.stringify(result), "EX", 10);
 
   return result;
 };
+
+export function clearHash(hashKey: string) {
+  redisClient.del(hashKey);
+}
